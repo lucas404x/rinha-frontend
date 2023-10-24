@@ -1,15 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:json_tree_viewer/src/core/extensions/extensions.dart';
 
-import '../core/helpers/no_transition_web.dart';
-
-const _buttonColor = Color(0xFFE4E4E4);
+import '../core/extensions/extensions.dart';
+import 'colors.dart';
 
 ThemeData createTheme() {
   final textTheme = GoogleFonts.interTextTheme();
   return ThemeData(
-    pageTransitionsTheme: NoTransitionsOnWeb(),
+    pageTransitionsTheme: _NoTransitionsOnWeb(),
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         elevation: const MaterialStatePropertyAll(0),
@@ -20,11 +19,11 @@ ThemeData createTheme() {
         backgroundColor: MaterialStateColor.resolveWith(
           (states) {
             if (states.contains(MaterialState.pressed)) {
-              return _buttonColor.darken(15);
+              return AppColors.button.darken(15);
             } else if (states.contains(MaterialState.hovered)) {
-              return _buttonColor.darken(5);
+              return AppColors.button.darken(5);
             }
-            return _buttonColor;
+            return AppColors.button;
           },
         ),
       ),
@@ -45,7 +44,32 @@ ThemeData createTheme() {
         fontWeight: FontWeight.w400,
       ),
     ),
-    colorScheme: const ColorScheme.light(error: Color(0xFFBF0E0E), secondary: Color(0xFF4E9590)),
+    colorScheme: const ColorScheme.light(
+      error: AppColors.error,
+      secondary: AppColors.accent,
+    ),
     useMaterial3: true,
   );
+}
+
+final class _NoTransitionsOnWeb extends PageTransitionsTheme {
+  @override
+  Widget buildTransitions<T>(
+    route,
+    context,
+    animation,
+    secondaryAnimation,
+    child,
+  ) {
+    if (kIsWeb) {
+      return child;
+    }
+    return super.buildTransitions(
+      route,
+      context,
+      animation,
+      secondaryAnimation,
+      child,
+    );
+  }
 }
